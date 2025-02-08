@@ -9,11 +9,13 @@ public class ParrotCode : MonoBehaviour
 
 	//Componenets
 	Collider2D birdCol;
+	SpriteRenderer birdRend;
 
 	//Variables
 	public float birdLerp = 2f;
 	public float birdHealth = 1f;
 	public float birdHealCD = 1f;
+	public float platformCheck = -.90f;
 
 	//Vectors
 	Vector2 mousePos;
@@ -28,6 +30,7 @@ public class ParrotCode : MonoBehaviour
 		Cursor.visible = false;
 
 		birdCol = GetComponent<Collider2D>();
+		birdRend = GetComponent<SpriteRenderer>();
 	}
 
 	private void Update()
@@ -37,10 +40,14 @@ public class ParrotCode : MonoBehaviour
 		if (Input.GetMouseButton(0))
 		{
 			isMouseDown = true;
+
+			birdRend.color = Color.gray;
 		}
 		else
 		{
 			isMouseDown = false;
+
+			BirdColor();
 		}
 	}
 
@@ -86,6 +93,9 @@ public class ParrotCode : MonoBehaviour
 		if (birdHealth == 0)
 		{
 			birdCol.enabled = false;
+			StartCoroutine(BirdHealingCooldown());
+			birdHeal = false;
+			playerOnTop = false;
 		}
 		else
 		{
@@ -93,34 +103,56 @@ public class ParrotCode : MonoBehaviour
 		}
 	}
 
+	void BirdColor()
+	{
+		Color newColor = Color.Lerp(Color.red, Color.white, birdHealth);
+
+		birdRend.color = newColor;
+	}
+
+
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
-		if (!isMouseDown)
+		if (!isMouseDown && collision.gameObject == Player)
 		{
-			if (collision.gameObject == Player)
+			foreach (ContactPoint2D contact in collision.contacts)
 			{
-				birdHealth -= .25f;
+				if (contact.normal.y < platformCheck) 
+				{
+					birdHealth -= 0.15f;
+					playerOnTop = true;
+				}
 			}
 		}
 	}
+
 	private void OnCollisionStay2D(Collision2D collision)
 	{
-		if (!isMouseDown)
+		if (!isMouseDown && collision.gameObject == Player)
 		{
-			if (collision.gameObject == Player)
+			foreach (ContactPoint2D contact in collision.contacts)
 			{
-				playerOnTop = true;
-				birdHealth -= 1f * Time.deltaTime;
+				if (contact.normal.y < platformCheck)
+				{
+					playerOnTop = true;
+					birdHealth -= 1f * Time.deltaTime;
+					return; 
+				}
 			}
+			playerOnTop = false; 
 		}
 	}
+
 	private void OnCollisionExit2D(Collision2D collision)
 	{
-		if (collision.gameObject == Player)
+		if (!isMouseDown && collision.gameObject == Player)
 		{
-			StartCoroutine(BirdHealingCooldown());
-			birdHeal = false;
-			playerOnTop = false;
+			if (Player.transform.position.y >= transform.position.y - .1)
+			{
+				StartCoroutine(BirdHealingCooldown());
+				birdHeal = false;
+				playerOnTop = false;
+			}
 		}
 	}
 

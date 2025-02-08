@@ -11,7 +11,7 @@ public class MovementScript : MonoBehaviour
 	//Variables
 	public float walkSpeed = 7f;
 	public float jumpForce = 10f;
-	public float canJumpDistance = 1.1f;
+	public float canJumpDistance = .1f;
 
 	//Booleans
 	bool canJump = true;
@@ -59,7 +59,8 @@ public class MovementScript : MonoBehaviour
 
 	void jumpCheck()
 	{
-		RaycastHit2D hit = Physics2D.Raycast(transform.position, -Vector2.up, canJumpDistance, floorLayer);
+		Vector2 rayOrigin = new Vector2(transform.position.x, transform.position.y - (GetComponent<CapsuleCollider2D>().size.y / 2));
+		RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.down, canJumpDistance, floorLayer);
 
 		if (hit.collider != null)
 		{
@@ -67,8 +68,7 @@ public class MovementScript : MonoBehaviour
 		}
 		else
 		{
-			canJump = false;
+			canJump = false; 
 		}
 	}
-
 }

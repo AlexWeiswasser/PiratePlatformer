@@ -713,10 +713,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 1096994937}
-  birdLerp: 2
+  birdLerp: 3
   birdHealth: 1
   birdHealCD: 1
   platformCheck: -0.9
+  birdHealingRate: 0.25
 --- !u!50 &2090507524
 Rigidbody2D:
   serializedVersion: 4

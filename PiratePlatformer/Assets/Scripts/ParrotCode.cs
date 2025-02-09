@@ -12,10 +12,11 @@ public class ParrotCode : MonoBehaviour
 	SpriteRenderer birdRend;
 
 	//Variables
-	public float birdLerp = 2f;
+	public float birdLerp = 3f;
 	public float birdHealth = 1f;
 	public float birdHealCD = 1f;
 	public float platformCheck = -.90f;
+	public float birdHealingRate = .25f;
 
 	//Vectors
 	Vector2 mousePos;
@@ -27,14 +28,14 @@ public class ParrotCode : MonoBehaviour
 
 	void Start()
 	{
-		Cursor.visible = false;
-
 		birdCol = GetComponent<Collider2D>();
 		birdRend = GetComponent<SpriteRenderer>();
 	}
 
 	private void Update()
 	{
+		Cursor.visible = false;
+
 		BirdCalculations();
 
 		if (Input.GetMouseButton(0))
@@ -86,7 +87,7 @@ public class ParrotCode : MonoBehaviour
 		{
 			if (!playerOnTop && birdHealth < 1f && birdHeal)
 			{
-				birdHealth += .15f * Time.deltaTime;
+				birdHealth += birdHealingRate * Time.deltaTime;
 			}
 		}
 

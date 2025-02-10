@@ -5,26 +5,26 @@ using UnityEngine;
 public class ParrotCode : MonoBehaviour
 {
 	//Gameobjects
-	[SerializeField] GameObject Player;
+	[SerializeField] private GameObject Player;
 
 	//Componenets
-	Collider2D birdCol;
-	SpriteRenderer birdRend;
+	private Collider2D birdCol;
+	private SpriteRenderer birdRend;
 
 	//Variables
-	public float birdLerp = 3f;
+	public float birdLerp = 5f;
 	public float birdHealth = 1f;
 	public float birdHealCD = 1f;
 	public float platformCheck = -.90f;
 	public float birdHealingRate = .25f;
 
 	//Vectors
-	Vector2 mousePos;
+	private Vector2 mousePos;
 
 	//Booleans
-	bool playerOnTop = false;
-	bool birdHeal = true;
-	bool isMouseDown = false; 
+	private bool playerOnTop = false;
+	private bool birdHeal = true;
+	private bool isMouseDown = false; 
 
 	void Start()
 	{
@@ -52,7 +52,7 @@ public class ParrotCode : MonoBehaviour
 		}
 	}
 
-	void FixedUpdate()
+	void LateUpdate()
 	{
 		mousePos = GetMousePosition();
 

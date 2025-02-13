@@ -7,16 +7,13 @@ public class ParrotCode : MonoBehaviour
 	//Gameobjects
 	[SerializeField] private GameObject Player;
 
+	//Variables
+	float birdHealth; 
+
 	//Componenets
 	private Collider2D birdCol;
 	private SpriteRenderer birdRend;
-
-	//Variables
-	public float birdLerp = 5f;
-	public float birdHealth = 1f;
-	public float birdHealCD = 1f;
-	public float platformCheck = -.90f;
-	public float birdHealingRate = .25f;
+	public BirdControllerSettings settings;
 
 	//Vectors
 	private Vector2 mousePos;
@@ -30,6 +27,8 @@ public class ParrotCode : MonoBehaviour
 	{
 		birdCol = GetComponent<Collider2D>();
 		birdRend = GetComponent<SpriteRenderer>();
+
+		birdHealth = settings.baseBirdHealth;
 	}
 
 	private void Update()
@@ -58,7 +57,7 @@ public class ParrotCode : MonoBehaviour
 
 		if (!isMouseDown)
 		{
-			transform.position = Vector3.Lerp(transform.position, mousePos, Time.deltaTime * birdLerp);
+			transform.position = Vector3.Lerp(transform.position, mousePos, Time.deltaTime * settings.birdLerp);
 		}
 	}
 
@@ -87,7 +86,7 @@ public class ParrotCode : MonoBehaviour
 		{
 			if (!playerOnTop && birdHealth < 1f && birdHeal)
 			{
-				birdHealth += birdHealingRate * Time.deltaTime;
+				birdHealth += settings.birdHealingRate * Time.deltaTime;
 			}
 		}
 
@@ -118,7 +117,7 @@ public class ParrotCode : MonoBehaviour
 		{
 			foreach (ContactPoint2D contact in collision.contacts)
 			{
-				if (contact.normal.y < platformCheck) 
+				if (contact.normal.y < settings.platformCheckHeight) 
 				{
 					birdHealth -= 0.15f;
 					playerOnTop = true;
@@ -133,7 +132,7 @@ public class ParrotCode : MonoBehaviour
 		{
 			foreach (ContactPoint2D contact in collision.contacts)
 			{
-				if (contact.normal.y < platformCheck)
+				if (contact.normal.y < settings.platformCheckHeight)
 				{
 					playerOnTop = true;
 					birdHealth -= 1f * Time.deltaTime;
@@ -159,7 +158,7 @@ public class ParrotCode : MonoBehaviour
 
 	IEnumerator BirdHealingCooldown()
 	{
-		yield return new WaitForSeconds(birdHealCD);
+		yield return new WaitForSeconds(settings.birdHealCD);
 		birdHeal = true;
 	}
 }

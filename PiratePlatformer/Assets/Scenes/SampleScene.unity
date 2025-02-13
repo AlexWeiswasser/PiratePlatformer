@@ -548,11 +548,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22fc3725b30acdb4e82760168b7302d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 7
-  jumpForce: 10
-  canJumpDistance: 0.1
-  dashForce: 13
-  dashTime: 0.15
+  settings: {fileID: 11400000, guid: 648e52682203c914fbb01d216d65dbc6, type: 2}
 --- !u!1 &2090507520
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,7 +632,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -2.23, y: -1.68, z: 0}
-  m_LocalScale: {x: 0.3134544, y: 0.3134544, z: 0.3134544}
+  m_LocalScale: {x: 0.3134544, y: -0.43883613, z: 0.3134544}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -654,11 +650,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 1096994937}
-  birdLerp: 5
-  birdHealth: 1
-  birdHealCD: 1
-  platformCheck: -0.9
-  birdHealingRate: 0.25
+  settings: {fileID: 11400000, guid: a3cb5589fe613e44b95fe3a77b93bb1f, type: 2}
 --- !u!50 &2090507524
 Rigidbody2D:
   serializedVersion: 4

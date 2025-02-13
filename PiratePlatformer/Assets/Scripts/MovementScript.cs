@@ -8,13 +8,7 @@ public class MovementScript : MonoBehaviour
 	//Components
 	private Rigidbody2D rb;
 	private SpriteRenderer playerRend;
-
-	//Variables
-	public float walkSpeed = 7f;
-	public float jumpForce = 10f;
-	public float canJumpDistance = .1f;
-	public float dashForce = 13f;
-	public float dashTime = .15f;
+	public PlayerControllerSettings settings;
 
 	//Booleans
 	private bool canJump = true;
@@ -78,21 +72,21 @@ public class MovementScript : MonoBehaviour
 
 	void Walking()
 	{
-		rb.velocity = new Vector2(movementVector.x * walkSpeed, rb.velocity.y);
+		rb.velocity = new Vector2(movementVector.x * settings.walkSpeed, rb.velocity.y);
 	}
 
 	void Jumping()
 	{
 		canJump = false;
 
-		rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+		rb.velocity = new Vector2(rb.velocity.x, settings.jumpForce);
 	}
 
 	void Dashing()
 	{
 		rb.gravityScale = 0f;
 
-		rb.velocity = lastMovement.normalized * dashForce;
+		rb.velocity = lastMovement.normalized * settings.dashForce;
 
 		isDashing = true;
 		canDash = false;
@@ -104,9 +98,9 @@ public class MovementScript : MonoBehaviour
 	{
 		Vector2 rayOrigin = new Vector2(transform.position.x, transform.position.y - (GetComponent<CapsuleCollider2D>().size.y / 2));
 
-		RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, canJumpDistance, floorLayer);
+		RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, settings.canJumpDistance, floorLayer);
 
-		RaycastHit2D birdHit = Physics2D.Raycast(rayOrigin, Vector2.down, canJumpDistance, birdLayer);
+		RaycastHit2D birdHit = Physics2D.Raycast(rayOrigin, Vector2.down, settings.canJumpDistance, birdLayer);
 
 		if (floorHit.collider != null)
 		{
@@ -125,7 +119,7 @@ public class MovementScript : MonoBehaviour
 
 	IEnumerator OnDash()
 	{
-		yield return new WaitForSeconds(dashTime);
+		yield return new WaitForSeconds(settings.dashTime);
 
 		rb.gravityScale = 3f; 
 

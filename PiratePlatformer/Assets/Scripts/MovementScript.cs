@@ -7,7 +7,6 @@ public class MovementScript : MonoBehaviour
 
 	//Components
 	private Rigidbody2D rb;
-	private SpriteRenderer playerRend;
 	public PlayerControllerSettings settings;
 
 	//Booleans
@@ -26,7 +25,6 @@ public class MovementScript : MonoBehaviour
 	void Start()
 	{
 		rb = GetComponent<Rigidbody2D>();
-		playerRend = GetComponent<SpriteRenderer>();
 
 		floorLayer = LayerMask.GetMask("Floor");
 		birdLayer = LayerMask.GetMask("Parrot");
@@ -50,14 +48,14 @@ public class MovementScript : MonoBehaviour
 			Dashing();
 		}
 
-		if(canDash)
+		/*if(canDash)
 		{
 			playerRend.color = Color.magenta;
 		}
 		else
 		{
 			playerRend.color = Color.white;
-		}
+		}*/
 	}
 
 	void FixedUpdate()

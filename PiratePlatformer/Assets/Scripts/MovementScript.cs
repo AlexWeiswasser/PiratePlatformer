@@ -123,4 +123,12 @@ public class MovementScript : MonoBehaviour
 
 		isDashing = false;
 	}
+
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		if(collision.gameObject.tag == "Danger")
+		{
+			transform.position = new Vector3(0, 0, 0);
+		}
+	}
 }

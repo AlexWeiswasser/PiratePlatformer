@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ParrotCode : MonoBehaviour
@@ -29,12 +28,11 @@ public class ParrotCode : MonoBehaviour
 		birdRend = GetComponent<SpriteRenderer>();
 
 		birdHealth = settings.baseBirdHealth;
+		Cursor.visible = false;
 	}
 
 	private void Update()
 	{
-		Cursor.visible = false;
-
 		BirdCalculations();
 
 		if (Input.GetMouseButton(0))
@@ -105,7 +103,7 @@ public class ParrotCode : MonoBehaviour
 
 	void BirdColor()
 	{
-		Color newColor = Color.Lerp(Color.red, Color.white, birdHealth);
+		Color newColor = Color.Lerp(Color.red, Color.blue, birdHealth);
 
 		birdRend.color = newColor;
 	}

@@ -1,61 +1,65 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MovementScript : MonoBehaviour
 {
-
-	//Components
+	// Components
 	private Rigidbody2D rb;
 	public PlayerControllerSettings settings;
 
-	//Booleans
-	private bool canJump = true;
+	// Dashing
 	private bool isDashing = false;
-	private bool canDash = true; 
+	private bool canDash = true;
 
-	//Vectors
-	private Vector2 movementVector = new Vector2(0, 0);
+	// Coyote Time Variables
+	public float coyoteTime = 0.1f; 
+	private float coyoteTimeCounter = 0f;
+
+	// Movement Vectors
+	private Vector2 movementVector = Vector2.zero;
 	private Vector2 lastMovement = new Vector2(1, 0);
+	private Vector2 startPos;
 
-	//Layers
+	// Layers
 	private int floorLayer;
 	private int birdLayer;
+
+	// Cached Collider for ground checking
+	private Collider2D col;
 
 	void Start()
 	{
 		rb = GetComponent<Rigidbody2D>();
+		col = GetComponent<Collider2D>();
 
 		floorLayer = LayerMask.GetMask("Floor");
 		birdLayer = LayerMask.GetMask("Parrot");
+
+		startPos = transform.position;
 	}
 
 	void Update()
 	{
 		movementVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-		if (movementVector != new Vector2(0, 0))
+		if (movementVector != Vector2.zero)
 		{
 			lastMovement = movementVector;
 		}
 
-		if (Input.GetKeyDown(KeyCode.Space) && canJump && !isDashing)
+		if (Input.GetKeyDown(KeyCode.Space) && coyoteTimeCounter > 0f && !isDashing)
 		{
 			Jumping();
 		}
+
 		if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
 		{
 			Dashing();
 		}
 
-		/*if(canDash)
+		if (coyoteTimeCounter > 0f)
 		{
-			playerRend.color = Color.magenta;
+			coyoteTimeCounter -= Time.deltaTime;
 		}
-		else
-		{
-			playerRend.color = Color.white;
-		}*/
 	}
 
 	void FixedUpdate()
@@ -63,9 +67,8 @@ public class MovementScript : MonoBehaviour
 		if (!isDashing)
 		{
 			Walking();
-			jumpCheck();
+			GroundCheck();
 		}
-		
 	}
 
 	void Walking()
@@ -75,60 +78,44 @@ public class MovementScript : MonoBehaviour
 
 	void Jumping()
 	{
-		canJump = false;
-
+		coyoteTimeCounter = 0f;
 		rb.velocity = new Vector2(rb.velocity.x, settings.jumpForce);
 	}
 
 	void Dashing()
 	{
 		rb.gravityScale = 0f;
-
 		rb.velocity = lastMovement.normalized * settings.dashForce;
-
 		isDashing = true;
 		canDash = false;
-
 		StartCoroutine(OnDash());
 	}
 
-	void jumpCheck()
+	void GroundCheck()
 	{
-		Vector2 rayOrigin = new Vector2(transform.position.x, transform.position.y - (GetComponent<CapsuleCollider2D>().size.y / 2));
-
+		Vector2 rayOrigin = new Vector2(col.bounds.center.x, col.bounds.min.y);
 		RaycastHit2D floorHit = Physics2D.Raycast(rayOrigin, Vector2.down, settings.canJumpDistance, floorLayer);
-
 		RaycastHit2D birdHit = Physics2D.Raycast(rayOrigin, Vector2.down, settings.canJumpDistance, birdLayer);
 
-		if (floorHit.collider != null)
+		if (floorHit.collider != null || birdHit.collider != null)
 		{
-			canJump = true;
-			canDash = true; 
-		}
-		else if (birdHit.collider != null)
-		{
-			canJump = true;
-		}
-		else
-		{
-			canJump = false; 
+			coyoteTimeCounter = coyoteTime; 
+			canDash = true;
 		}
 	}
 
 	IEnumerator OnDash()
 	{
 		yield return new WaitForSeconds(settings.dashTime);
-
-		rb.gravityScale = 3f; 
-
+		rb.gravityScale = 3f;
 		isDashing = false;
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
-		if(collision.gameObject.tag == "Danger")
+		if (collision.gameObject.tag == "Danger")
 		{
-			transform.position = new Vector3(0, 0, 0);
+			transform.position = startPos;
 		}
 	}
 }
